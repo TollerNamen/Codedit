@@ -1,0 +1,6 @@
+.keyword { -fx-fill: blue; }
+.paren { -fx-fill: red; }
+.brace { -fx-fill: green; }
+.bracket { -fx-fill: yellow; }
+.semicolon { -fx-fill: purple; }
+.string { -fx-fill: green }
