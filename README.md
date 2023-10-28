@@ -1,4 +1,9 @@
 # Codedit - a lightweight code editor written in Java
+## Screenshots:
+### Start-Window
+![picture](https://github.com/TollerNamen/Codedit/blob/65903a078ea48a8cdd0a7d20459f62e27be984a5/2023-10-28-172631_sway-screenshot.png)
+### Editor-Window
+![picture](https://github.com/TollerNamen/Codedit/blob/65903a078ea48a8cdd0a7d20459f62e27be984a5/2023-10-28-172711_sway-screenshot.png)
 ## Planned Features:
 * Syntax Highlighting for a collection of languages
 * Plugin System to for example make all the features compatible with additional languages
