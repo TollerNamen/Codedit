@@ -1,22 +1,23 @@
-package org.fidelitas.ide;
+package org.fidelitas.ide.controller;
 
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
+
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
-
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class Controller implements Initializable
+public class Editor implements Initializable
 {
+    /*
     private static final String[] KEYWORDS = new String[] {
             "abstract", "assert", "boolean", "break", "byte",
             "case", "catch", "char", "class", "const",
@@ -29,7 +30,6 @@ public class Controller implements Initializable
             "switch", "synchronized", "this", "throw", "throws",
             "transient", "try", "void", "volatile", "while"
     };
-    /*
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
     private static final String PAREN_PATTERN = "\\(|\\)";
     private static final String BRACE_PATTERN = "\\{|\\}";
@@ -60,23 +60,29 @@ public class Controller implements Initializable
     @FXML
     private TreeView<String> treeView;
 
-    private Map<TreeItem<String>, File> fileReference = new HashMap<>();
-    private CodeArea codeArea = new CodeArea();
-
+    private final Map<TreeItem<String>, File> fileReference = new HashMap<>();
+    private final CodeArea codeArea = new CodeArea();
+    private final Map<File, String> buffer = new HashMap<>();
+    private String path = "/home/admindavid/IdeaProjects/example";
+    public Editor()
+    {
+    }
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
+    @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        System.out.println("starting init");
-
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
         rootPane.setCenter(codeArea);
 
-        File file = new File(CodeditApplication.projectPath);
+        File file = new File(path);
         TreeItem<String> rootTreeItem = createTreeView(file.getName(), file);
         treeView.setRoot(rootTreeItem);
     }
     private TreeItem<String> createTreeView(String name, File path)
     {
-        System.out.println("executing");
         File[] subDirs = path.listFiles();
         assert subDirs != null;
         TreeItem<String> treeItem;
@@ -115,14 +121,25 @@ public class Controller implements Initializable
         }
         return treeItem;
     }
-    public void onEditStart(Event event)
+    private File lastSelectedFile;
+    public void onMouseClicked()
     {
         try
         {
-            System.out.println(fileReference);
             TreeItem<String> selectedItem = treeView.getSelectionModel().getSelectedItem();
+            if (selectedItem == null)
+                return;
+
             File file = fileReference.get(selectedItem);
             String content = Files.readString(file.toPath());
+
+            buffer.putIfAbsent(file, content);
+
+            if (lastSelectedFile != null)
+                buffer.put(lastSelectedFile, codeArea.getText());
+            lastSelectedFile = file;
+            codeArea.clear();
+            codeArea.appendText(buffer.get(lastSelectedFile));
             /*
             Matcher matcher = PATTERN.matcher(content);
             if (matcher.matches())
@@ -140,6 +157,31 @@ public class Controller implements Initializable
         {
             e.printStackTrace();
         }
+    }
+    public void onEditStart()
+    {
+    }
+    public void onAction()
+    {
+        System.out.println(buffer);
+        writeFiles(buffer);
+    }
+    public static void writeFiles(Map<File, String> buffer)
+    {
+        buffer.forEach((file, s) -> {
+            if (file.canWrite())
+            {
+                try
+                {
+                    Files.writeString(file.toPath(), s);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
     /*
     public StyleSpans<Collection<String>> highlight(String code)
