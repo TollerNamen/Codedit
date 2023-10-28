@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fidelitas.ide.controller.Editor">
+<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fidelitas.ide.controller.Editor">
    <right>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
    </right>
@@ -27,9 +27,9 @@
        <HBox prefHeight="17.0" prefWidth="600.0" BorderPane.alignment="CENTER">
            <MenuBar prefHeight="30.0" prefWidth="412.0">
                <Menu mnemonicParsing="false" text="File">
-               <MenuItem mnemonicParsing="false" onAction="#onAction" text="Save All" />
+               <MenuItem mnemonicParsing="false" onAction="#onSaveAllAction" text="Save All" />
                <SeparatorMenuItem mnemonicParsing="false" />
-                   <MenuItem mnemonicParsing="false" text="Close" />
+                   <MenuItem mnemonicParsing="false" onAction="#onExitAction" text="Exit" />
                </Menu>
                <Menu mnemonicParsing="false" text="Edit">
                    <MenuItem mnemonicParsing="false" text="Delete" />

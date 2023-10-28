@@ -9,11 +9,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.fidelitas.ide.CodeditApplication;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,10 +22,10 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Start implements Initializable
+public class Start extends CodeditApplication implements Initializable
 {
     @FXML
-    private Button openProject;
+    private Button openProjectButton;
     @FXML
     private Button newProject;
     @FXML
@@ -33,43 +33,52 @@ public class Start implements Initializable
     @FXML
     private HBox parent;
 
-    private final ListView<String> openProjects = new ListView<>();
-    private final Map<String, String> existingProjects = new HashMap<>();
-    private final List<String> names = new ArrayList<>();
-
+    private final ListView<String> openProjectsListView = new ListView<>();
+    private final Map<String, String> existingProjectsMap = new HashMap<>();
+    private final List<String> namesList = new ArrayList<>();
+    private Label notificationLabel;
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
         populateWithExistingProjects();
-        ObservableList<String> items = FXCollections.observableArrayList(names);
-        openProjects.setItems(items);
+        ObservableList<String> items = FXCollections.observableArrayList(namesList);
+        openProjectsListView.setItems(items);
         AtomicReference<String> selectedItem = new AtomicReference<>();
 
-        openProjects
+        openProjectsListView
                 .getSelectionModel()
                 .selectedItemProperty()
                 .addListener((arg0, arg1, arg2) ->
-                        selectedItem.set(openProjects.getSelectionModel().getSelectedItem()));
+                        selectedItem.set(openProjectsListView.getSelectionModel().getSelectedItem()));
 
-        openProject.setOnAction(event -> {
+        openProjectButton.setOnAction(event -> {
             VBox vBox = new VBox();
-            vBox.getChildren().add(openProjects);
+            vBox.getChildren().add(openProjectsListView);
             Button enter = new Button("Confirm");
             enter.setOnAction(event1 ->
             {
                 try
                 {
-                    if (String.valueOf(selectedItem) != null)
+                    if (!Objects.equals(String.valueOf(selectedItem), "null"))
                         switchToEditor(event1, String.valueOf(selectedItem));
+                    else
+                    {
+                        notificationLabel.setStyle("-fx-text-fill: #ff0000");
+                        notificationLabel.setText("You have to select a project!");
+                    }
                 }
                 catch (IOException e)
                 {
                     throw new RuntimeException(e);
                 }
             });
+            notificationLabel = new Label();
             vBox.getChildren().add(enter);
+            vBox.getChildren().add(notificationLabel);
+            vBox.setMaxWidth(200);
             parent.getChildren().add(vBox);
         });
+        exit.setOnAction(event -> exitDialog());
     }
     public void populateWithExistingProjects()
     {
@@ -80,8 +89,8 @@ public class Start implements Initializable
             while (line != null)
             {
                 String[] parts = line.split("=");
-                names.add(parts[0]);
-                existingProjects.put(parts[0], parts[1]);
+                namesList.add(parts[0]);
+                existingProjectsMap.put(parts[0], parts[1]);
 
                 line = reader.readLine();
             }
@@ -94,15 +103,16 @@ public class Start implements Initializable
     }
     public void switchToEditor(ActionEvent event, String selectedItem) throws IOException
     {
-        System.out.println(existingProjects.get(selectedItem));
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Objects.requireNonNull(getClass().getResource("editor.fxml")));
         Parent root = loader.load();
         Editor editorController = loader.getController();
-        editorController.setPath(existingProjects.get(selectedItem));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        editorController.setPath(existingProjectsMap.get(selectedItem));
+        Stage oldStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Stage newStage = new Stage();
+        newStage.setScene(scene);
+        newStage.show();
+        oldStage.close();
     }
 }

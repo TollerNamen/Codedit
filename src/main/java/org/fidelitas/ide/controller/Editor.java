@@ -6,6 +6,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
 
+import org.fidelitas.ide.CodeditApplication;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import java.io.File;
@@ -15,45 +16,8 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class Editor implements Initializable
+public class Editor extends CodeditApplication implements Initializable
 {
-    /*
-    private static final String[] KEYWORDS = new String[] {
-            "abstract", "assert", "boolean", "break", "byte",
-            "case", "catch", "char", "class", "const",
-            "continue", "default", "do", "double", "else",
-            "enum", "extends", "final", "finally", "float",
-            "for", "goto", "if", "implements", "import",
-            "instanceof", "int", "interface", "long", "native",
-            "new", "package", "private", "protected", "public",
-            "return", "short", "static", "strictfp", "super",
-            "switch", "synchronized", "this", "throw", "throws",
-            "transient", "try", "void", "volatile", "while"
-    };
-    private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
-    private static final String PAREN_PATTERN = "\\(|\\)";
-    private static final String BRACE_PATTERN = "\\{|\\}";
-    private static final String BRACKET_PATTERN = "\\[|\\]";
-    private static final String SEMICOLON_PATTERN = ";";
-    private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
-    private static final String COMMENT_PATTERN = "//.*|/\\*(.|\\R)*?\\*\/";
-    private static final String NUMBER_PATTERN = "\\b\\d+(\\.\\d+)?\\b";
-    private static final String OPERATOR_PATTERN = "\\+|-|\\*|/|%|=|==|!=|>|<|>=|<=|&&|\\|\\|";
-    private static final String VARIABLE_PATTERN = "\\b[a-zA-Z_$][a-zA-Z\\d_$]*\\b";
-    private static final Pattern PATTERN = Pattern.compile(
-            "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
-                    + "|(?<PAREN>" + PAREN_PATTERN + ")"
-                    + "|(?<BRACE>" + BRACE_PATTERN + ")"
-                    + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
-                    + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
-                    + "|(?<STRING>" + STRING_PATTERN + ")"
-                    + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
-                    + "|(?<NUMBER>" + NUMBER_PATTERN + ")"
-                    + "|(?<OPERATOR>" + OPERATOR_PATTERN + ")"
-                    + "|(?<VARIABLE>" + VARIABLE_PATTERN + ")"
-    );
-    */
-
     @FXML
     private BorderPane rootPane;
 
@@ -131,6 +95,9 @@ public class Editor implements Initializable
                 return;
 
             File file = fileReference.get(selectedItem);
+            if (file.isDirectory())
+                return;
+
             String content = Files.readString(file.toPath());
 
             buffer.putIfAbsent(file, content);
@@ -161,10 +128,14 @@ public class Editor implements Initializable
     public void onEditStart()
     {
     }
-    public void onAction()
+    public void onSaveAllAction()
     {
         System.out.println(buffer);
         writeFiles(buffer);
+    }
+    public void onExitAction()
+    {
+        exitDialog();
     }
     public static void writeFiles(Map<File, String> buffer)
     {
@@ -183,31 +154,4 @@ public class Editor implements Initializable
             }
         });
     }
-    /*
-    public StyleSpans<Collection<String>> highlight(String code)
-    {
-        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
-        Matcher matcher = PATTERN.matcher(code);
-        int lastKwEnd = 0;
-        while (matcher.find())
-        {
-            String styleClass =
-                    matcher.group("KEYWORD") != null ? "keyword" :
-                            matcher.group("PAREN") != null ? "paren" :
-                                    matcher.group("BRACE") != null ? "brace" :
-                                            matcher.group("BRACKET") != null ? "bracket" :
-                                                    matcher.group("SEMICOLON") != null ? "semicolon" :
-                                                            matcher.group("STRING") != null ? "string" :
-                                                                    matcher.group("COMMENT") != null ? "comment" :
-                                                                            null; /* never happens *\/
-            assert styleClass != null;
-            spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
-            spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
-            lastKwEnd = matcher.end();
-        }
-        spansBuilder.add(Collections.emptyList(), code.length() - lastKwEnd);
-        return spansBuilder.create();
-    }
-    */
-
 }

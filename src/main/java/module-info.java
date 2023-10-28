@@ -5,7 +5,8 @@ module org.fidelitas.ide
 
     //requires org.kordamp.ikonli.javafx;
     requires org.fxmisc.richtext;
-    //requires reactfx;
+    requires org.fxmisc.flowless;
+    requires reactfx;
     //requires org.fxmisc.flowless;
 
     opens org.fidelitas.ide to javafx.fxml;

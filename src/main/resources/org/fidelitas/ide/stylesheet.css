@@ -1,6 +1,22 @@
-.keyword { -fx-fill: blue; }
-.paren { -fx-fill: red; }
-.brace { -fx-fill: green; }
-.bracket { -fx-fill: yellow; }
-.semicolon { -fx-fill: purple; }
-.string { -fx-fill: green }
+* {
+-fx-background-color: #222222;
+-fx-text-fill: white;
+}
+Button {
+-fx-border-color: #444444;
+}
+Button:hover {
+-fx-background-color: #444444;
+}
+.list-cell {
+-fx-border-color: #444444;
+}
+.list-cell:hover {
+-fx-background-color: #444444;
+}
+.list-cell:selected {
+-fx-background-color: #4a4aff;
+}
+code-area {
+-fx-background-color: #444444;
+}

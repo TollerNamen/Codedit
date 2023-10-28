@@ -1,3 +1,16 @@
+import io.github.fvarrui.javapackager.gradle.PackageTask
+import io.github.fvarrui.javapackager.model.LinuxConfig
+import io.github.fvarrui.javapackager.model.MacConfig
+import io.github.fvarrui.javapackager.model.WindowsConfig
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'io.github.fvarrui:javapackager:1.7.5'
+    }
+}
 plugins {
     id 'java'
     id 'application'
@@ -8,6 +21,8 @@ plugins {
 
 group 'org.fidelitas'
 version '1.0-SNAPSHOT'
+
+apply plugin: 'io.github.fvarrui.javapackager.plugin'
 
 repositories {
     mavenCentral()
@@ -35,6 +50,7 @@ javafx {
 }
 
 dependencies {
+    implementation group: 'org.reactfx', name: 'reactfx', version: '1.4.1'
     implementation('org.fxmisc.richtext:richtextfx:0.11.1')
     implementation('org.kordamp.ikonli:ikonli-javafx:12.3.1')
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
@@ -55,4 +71,24 @@ jlink {
 
 jlinkZip {
     group = 'distribution'
+}
+tasks.register('release', PackageTask) {
+    dependsOn build
+    // mandatory
+    mainClass = 'org.fidelitas.ide.CodeditApplication'
+    // optional
+    bundleJre = false
+    generateInstaller = false
+    administratorRequired = false
+    platform = "auto"
+    //additionalResources = [ file('file path'), file('folder path'), ... ]
+    linuxConfig(({
+
+    } as Closure<LinuxConfig>))
+    macConfig(({
+
+    } as Closure<MacConfig>))
+    winConfig(({
+
+    } as Closure<WindowsConfig>))
 }
