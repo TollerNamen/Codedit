@@ -2,12 +2,14 @@
 -fx-background-color: #222222;
 -fx-text-fill: white;
 }
+
 Button {
 -fx-border-color: #444444;
 }
 Button:hover {
 -fx-background-color: #444444;
 }
+
 .list-cell {
 -fx-border-color: #444444;
 }
@@ -17,6 +19,19 @@ Button:hover {
 .list-cell:selected {
 -fx-background-color: #4a4aff;
 }
+
 code-area {
 -fx-background-color: #444444;
+}
+
+.tree-cell:hover,
+.tree-cell:hover .tree-disclosure-node {
+-fx-background-color: #444444;
+}
+.tree-cell:selected,
+.tree-cell:selected .tree-disclosure-node {
+-fx-background-color: #4a4aff;
+}
+.tree-cell .arrow {
+-fx-background-color: white;
 }

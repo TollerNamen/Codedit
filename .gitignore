@@ -4,6 +4,12 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+# Concept and may be under copyright:
+src/main/java/org/fidelitas/ide/syntaxhighlighting/Java.java
+
+# Don't need it here:
+.codedit.txt
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
