@@ -17,3 +17,13 @@
 * Renaming stuff
 * Syntax highlighting, Java just for now
 * After the above essentials are implemented, make a first release
+
+## Dependencies Used in this Project:
+| Name              | Version |
+|:------------------|--------:|
+| JavaPackager      |   1.7.5 |
+| ReactFx           |   1.4.1 |
+| RichTextFx        |  0.11.1 |
+| Ikonli            |  12.3.1 |
+| JUnit Jupiter API |   5.9.2 |
+| JUnit Jupiter Eng |   5.9.2 |
