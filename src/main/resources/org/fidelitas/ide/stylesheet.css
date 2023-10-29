@@ -20,8 +20,9 @@ Button:hover {
 -fx-background-color: #4a4aff;
 }
 
-code-area {
+.text-area {
 -fx-background-color: #444444;
+-fx-text-fill: white;
 }
 
 .tree-cell:hover,
@@ -34,4 +35,46 @@ code-area {
 }
 .tree-cell .arrow {
 -fx-background-color: white;
+}
+
+.tab-pane .tab-header-area .tab .headers-region {
+-fx-border-color: #444444;
+-fx-text-fill: white;
+}
+.tab-pane:hover .tab-header-area .tab .headers-region {
+-fx-background-color: #444444;
+}
+.keyword {
+-fx-fill: orange;
+-fx-font-weight: bold;
+}
+.semicolon {
+-fx-font-weight: bold;
+}
+.paren {
+-fx-fill: firebrick;
+-fx-font-weight: bold;
+}
+.bracket {
+-fx-fill: lightgreen;
+-fx-font-weight: bold;
+}
+.brace {
+-fx-fill: teal;
+-fx-font-weight: bold;
+}
+.string {
+-fx-fill: lightblue;
+}
+
+.comment {
+-fx-fill: grey;
+}
+
+.paragraph-box:has-caret {
+-fx-background-color: #333333;
+}
+
+.default {
+-fx-fill: white;
 }

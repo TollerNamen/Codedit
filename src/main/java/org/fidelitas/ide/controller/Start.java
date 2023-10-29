@@ -13,8 +13,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.fidelitas.ide.CodeditApplication;
 
+import org.fidelitas.ide.CodeditApplication;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -32,7 +32,6 @@ public class Start extends CodeditApplication implements Initializable
     private Button exit;
     @FXML
     private HBox parent;
-
     private final ListView<String> openProjectsListView = new ListView<>();
     private final Map<String, String> existingProjectsMap = new HashMap<>();
     private final List<String> namesList = new ArrayList<>();
@@ -107,12 +106,13 @@ public class Start extends CodeditApplication implements Initializable
         loader.setLocation(Objects.requireNonNull(getClass().getResource("editor.fxml")));
         Parent root = loader.load();
         Editor editorController = loader.getController();
-        editorController.setPath(existingProjectsMap.get(selectedItem));
+        editorController.path = existingProjectsMap.get(selectedItem);
+        editorController.initializeProject();
         Stage oldStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         Stage newStage = new Stage();
         newStage.setScene(scene);
-        newStage.show();
         oldStage.close();
+        newStage.show();
     }
 }

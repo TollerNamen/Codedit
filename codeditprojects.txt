@@ -1,1 +1,2 @@
 ide=/home/admindavid/IdeaProjects/example
+codedit=/home/admindavid/IdeaProjects/ide
