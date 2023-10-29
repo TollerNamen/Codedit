@@ -2,17 +2,22 @@ package org.fidelitas.ide.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
 
 import org.fidelitas.ide.CodeditApplication;
+import org.fidelitas.ide.ProjectConfiguration;
+import org.fidelitas.ide.syntaxhighlighting.Java;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -20,14 +25,15 @@ public class Editor extends CodeditApplication implements Initializable
 {
     @FXML
     private BorderPane rootPane;
-
     @FXML
     private TreeView<String> treeView;
-
+    @FXML
+    private TabPane tabPane;
     private final Map<TreeItem<String>, File> fileReference = new HashMap<>();
-    private final CodeArea codeArea = new CodeArea();
+    //private final CodeArea codeArea = new CodeArea();
     private final Map<File, String> buffer = new HashMap<>();
-    private String path = "/home/admindavid/IdeaProjects/example";
+    public String path;
+    private ProjectConfiguration projectConfiguration;
     public Editor()
     {
     }
@@ -38,8 +44,13 @@ public class Editor extends CodeditApplication implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
-        rootPane.setCenter(codeArea);
+        //codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+    }
+    public void initializeProject()
+    {
+        projectConfiguration = new ProjectConfiguration(path);
+        projectConfiguration.setLanguageAndBuildSystem("java", "gradle");
+        projectConfiguration.configureProject();
 
         File file = new File(path);
         TreeItem<String> rootTreeItem = createTreeView(file.getName(), file);
@@ -86,7 +97,7 @@ public class Editor extends CodeditApplication implements Initializable
         return treeItem;
     }
     private File lastSelectedFile;
-    public void onMouseClicked()
+    public void onTreeItemMouseClicked()
     {
         try
         {
@@ -102,22 +113,21 @@ public class Editor extends CodeditApplication implements Initializable
 
             buffer.putIfAbsent(file, content);
 
+            CodeArea codeArea = new CodeArea();
+
+            Java.syntax(tabPane, file.getName(), codeArea, content);
+
+            //tabPane.getTabs().add(new Tab(file.getName(), codeArea));
+            /*
+            codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+
             if (lastSelectedFile != null)
                 buffer.put(lastSelectedFile, codeArea.getText());
             lastSelectedFile = file;
             codeArea.clear();
-            codeArea.appendText(buffer.get(lastSelectedFile));
-            /*
-            Matcher matcher = PATTERN.matcher(content);
-            if (matcher.matches())
-            {
-                StyleSpans<Collection<String>> styleSpans = highlight(content);
-                codeArea.setStyleSpans(0, styleSpans);
-            }
-            else
-            {
-                System.out.println("The code does not match the pattern.");
-            }
+            //codeArea.appendText(buffer.get(lastSelectedFile));
+            codeArea.appendText(content);
+            codeArea.setStyleClass(0, content.length(), ".code-area");
              */
         }
         catch (Exception e)
@@ -153,5 +163,27 @@ public class Editor extends CodeditApplication implements Initializable
                 }
             }
         });
+    }
+    public void run()
+    {
+        try
+        {
+            projectConfiguration.executeRunTask();
+        }
+        catch (IOException | InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+    public void build()
+    {
+        try
+        {
+            projectConfiguration.executeBuildTask();
+        }
+        catch (IOException | InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }

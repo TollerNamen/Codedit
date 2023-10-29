@@ -35,6 +35,7 @@ public class CodeditApplication extends Application
         DialogPane exitQuestion = new DialogPane();
         Label label = new Label("Do you really want to exit?");
         exitQuestion.setContent(label);
+        //exitQuestion.getStylesheets().add(Objects.requireNonNull(getClass().getResource("stylesheet.css")).toExternalForm());
 
         Dialog<String> dialog = new Dialog<>();
         dialog.setDialogPane(exitQuestion);
